@@ -28,16 +28,22 @@ class celestialBody:
     # Changes the velocity of the star based on the force acting on it
     # by all the other stars.
     def update_velocity(self, all_bodies):
+        # Loops over all the celestial bosies in the simulation
         for body in all_bodies:
+            # If the body is not itself
             if body != self:
+                # Calculates the acceleration from the gravitational force exerted on it.
                 rsquared = (self.position - body.position).dot(self.position - body.position)
-                force_dir = self.normalize(self.position - body.position)
-                acceleration = force_dir * self.G * body.mass / rsquared
+                force_dir = self.normalize(self.position - body.position) # The direction of the force
+                acceleration = force_dir * self.G * body.mass / rsquared # The acceleration as a vector
+                # Updates the velocity using the acceleration.
                 self.velocity -= acceleration * self.time_step
     
     # Updates the position by using the velocity.
     def update_position(self):
+        # Adds the current position to the history
         self.history.append([self.position[0], self.position[1], np.sqrt(self.velocity.dot(self.velocity)), self.velocity])
+        # Updates the position based on the current velocity
         self.position += self.velocity * self.time_step
 
     # Calculates the area of a traingle with vertices A,B, and C.

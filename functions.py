@@ -16,11 +16,11 @@ def get_area_deviation(star, com, time_inscribing):
     areas = star.area_inscribed(time_inscribing, com)
     mean_area = sum(areas)/len(areas)
     max_deviaiton = max(np.absolute(1-(max(areas)/mean_area)), np.absolute(1-(min(areas)/mean_area)))
-    return max_deviaiton
+    return max_deviaiton * 100
 
 
 # Linear interpolate function that moves adds more points in between
-# in order to make the points appear like lines
+# in order to make the points appear like lines.
 def interpolate(datapoints, number_times):
     # Doesn't do anything if asked to interpolate 0 times.
     if number_times == 0:
@@ -56,6 +56,7 @@ def get_redshifts(observer_position, star, c = 100):
     star_velocities = [star.history[i][3] for i in range(len(star.history))]
 
     redshifts = np.zeros(len(star_positions))
+    recessional_velocities = []
 
     for i, position in enumerate(star_positions):
         relative_position = np.array(position) - observer_position
@@ -63,8 +64,9 @@ def get_redshifts(observer_position, star, c = 100):
         star_velocity = star_velocities[i]
         recessional_velocity = star_velocity.dot(relative_position)/mag_position
         redshifts[i] = calculate_redshift(c, recessional_velocity)
+        recessional_velocities.append(recessional_velocity)
 
-    return redshifts
+    return redshifts, recessional_velocities
 
 # Finds A given a,b,c using cosine rule
 def cosine_rule(a,b,c):
